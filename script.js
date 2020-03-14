@@ -1,3 +1,8 @@
+// Global variable, this variable is set in a function but required in every other function
+var title;
+var delay;
+var notelist;
+
 // Z to denote # because javascript can't handle it, so I will write ZA for #A
 var audioA = new Audio('audio/A.wav')
 var audioB = new Audio('audio/B.wav')
@@ -22,11 +27,11 @@ function sleep(ms) {
 }
 
 async function play() {
-    if (document.getElementById("chord").innerHTML != "") {
-        // if not empty, play the song
-        var parent = document.getElementById("chord");
+    if (document.getElementById("notes").innerHTML != "") {
+        // If not empty, play the song
+        var parent = document.getElementById("notes");
         var child = parent.getElementsByTagName('*');
-        var i, e;
+        var i, e; // i for loop, e for element
         for (i = 0; i < child.length; ++i) {
             e = child[i];
             e.classList.add("active");
@@ -47,7 +52,11 @@ async function play() {
             else if (e.innerHTML == "##C") { audioZZC.load(); audioZZC.play(); }
             else if (e.innerHTML == "##D") { audioZZD.load(); audioZZD.play(); }
             else if (e.innerHTML == "##E") { audioZZE.load(); audioZZE.play(); }
-            await sleep(500);
+            if ((noteList[i][0] == 2) || (noteList[i][0] == 3) || (noteList[i][0] == 4)) {
+                await sleep(delay / noteList[i][0]);
+            } else if (noteList[i] != "|") { // Don't give <br> a delay
+                await sleep(delay);
+            }
             e.classList.remove("active");
         }
     }
@@ -56,15 +65,24 @@ async function play() {
 function konosuba() {
     var xmlhttp = new XMLHttpRequest();
     xmlhttp.onreadystatechange = function() {
-    if (this.readyState == 4 && this.status == 200) {
-        var song = JSON.parse(this.responseText);
+        if (this.readyState == 4 && this.status == 200) {
+            var song = JSON.parse(this.responseText);
 
-        chordList = song.chord.split(" ");
-        for (const item of chordList) {
-            var chordAtom = '<div class="chordAtom">' + item + '</div>'
-            document.getElementById("chord").innerHTML += chordAtom;
+            title = song.title;
+            delay = (60 / song.bpm) * 1000
+            noteList = song.notes.split(" ");
+            for (const item of noteList) {
+                if (item == "|") {
+                    var noteAtom = '<br>';
+                }
+                else if ((item[0] == 2) || (item[0] == 3) || (item[0] == 4)) {
+                    var noteAtom = '<div class="noteAtom">' + item.substring(1) + '</div>';
+                } else {
+                    var noteAtom = '<div class="noteAtom">' + item + '</div>';
+                }
+                document.getElementById("notes").innerHTML += noteAtom;
+            }
         }
-    }
     };
     xmlhttp.open("GET", "songs/konosuba-ed1.json", true);
     xmlhttp.send();

@@ -2,7 +2,7 @@
     border: 1px solid red;
 } */
 
-.chordAtom {
+.noteAtom {
     display: inline-block;
     font-size: 100px;
     padding: 10px;

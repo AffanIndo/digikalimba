@@ -1,5 +1,5 @@
 {
     "title":"Konosuba! ED - Chiisana Boukensha",
-    "beat":120,
-    "chord":"C C D E G A #C A G E E D C C D E E G A G E D A G E D C C D C"
+    "bpm":"80",
+    "notes":"C C 2D E E 2G A 2#C A 2G E | E 2D C C 2D E | E 2G A G E D A G E D C C 2D C"
 }
